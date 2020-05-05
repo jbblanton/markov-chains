@@ -24,15 +24,13 @@ def make_chains(text_string):
 
     # break string into words
     words = open_and_read_file(text_string).split()
-    print(words)
 
     # break words into pairs
     chains = {}
     
-    for i in range(len(words) - 1):
-        chains[(words[i], words[i + 1])] = None
-
-
+    for i in range(len(words) - 2):
+        chains[(words[i], words[i + 1])] = words[i + 2]
+    
     # return chains
     print(chains)
 
