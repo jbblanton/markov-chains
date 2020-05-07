@@ -16,7 +16,7 @@ def open_and_read_file(file_path):
     return contents
 
 
-def make_chains(text_string, number=3):
+def make_chains(text_string, number=2):
     """Take input text as string and number for creating n-gram; 
         return dictionary of Markov chains. """
 
@@ -28,21 +28,21 @@ def make_chains(text_string, number=3):
     # break words into n-grams & create the dictionary
     for i in range(len(words) - (number + 1)):
         key = tuple(words[i:(i + number)])
-        print(key)
-        value = words[i + 1 + number]
-        print(value)
-        chains[key] = (chains.get(key, []) + [value])
+        
+        value = [words[i + number]]
+        
+        chains[key] = (chains.get(key, []) + list(value))
         # if key not in chains:
         #     chains[key] = []
 
         # chains[key].append(value)
 
-        
+    chain_length = len(key)    
 
         # chains[(words[i], words[i + 1])] = (chains.get((words[i], 
         # words[i + 1]), []) + [words[i + 2]])    
     
-    #print(chains)
+    print(chains)
     return chains   
 
 
@@ -52,23 +52,24 @@ def make_text(chains, number=2):
     word_list = []
 
     # # choose a first key put those words in the list
-    #     # choice(chains)  # <-- Can I rando choose from a dict?
     link_one = random.choice(list(chains.keys()))
     word_list.extend(list(link_one))
-    #print(word_list)
+    print("starting:", word_list)
 
     pick = random.choice(chains[link_one])
-    word_list.append(pick)
+    word_list = word_list + [pick]
+    print("next:", word_list)
 
     key_error = False
 
-    # Build the chain by creating more bigrams
+    # Build the chain by creating more n-grams
     while key_error is False:
         try:
-            next_link = tuple(word_list[-1 * number:])
+            next_link = tuple(word_list[(-1 * number):])
+            print("next link:", next_link)
 
-            # Check if the bigram exists
-            if chains[next_link] == chains.get(next_link):
+            # Check if the n-gram exists
+            if next_link in chains:
                 pick = random.choice(chains[next_link])
                 word_list.append(pick)
                 key_error = False   
@@ -90,9 +91,9 @@ number = int(input("How many words in the n-gram?: "))
 input_text = open_and_read_file(input_path)
 
 # Get a Markov chain
-chains = make_chains(input_text)
+chains = make_chains(input_text, number)
 
 # Produce random text
-random_text = make_text(chains)
+random_text = make_text(chains, number)
 
 print(random_text)
